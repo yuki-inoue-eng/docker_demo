@@ -1,21 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strconv"
 )
 
 func main() {
-	port, err := strconv.Atoi(os.Args[1])
-	if err != nil {
-		log.Fatalf("Port specifiction error: %v", err)
-	}
+	port := flag.String("port", "8080", "port number")
+	flag.Parse()
 	http.HandleFunc("/", indexHandler)
 	fmt.Println("server start!")
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", *port), nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }

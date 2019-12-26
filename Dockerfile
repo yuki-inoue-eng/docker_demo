@@ -1,9 +1,11 @@
 FROM golang:1.13-alpine AS build
-WORKDIR /go/src/hello-heroku
+WORKDIR /go/src/docker_demo
+ENV GO111MODULE=on
 COPY . .
-RUN GOOS=linux GOARCH=amd64 go install .
+RUN go mod download
+RUN GOOS=linux GOARCH=amd64 go install  
 
-FROM alpine AS hello-heroku
+FROM alpine AS docker_demo
 RUN apk add ca-certificates 
-COPY --from=build /go/bin/hello-heroku /bin/hello-heroku
-CMD /bin/hello-heroku $PORT
+COPY --from=build /go/bin/docker_demo /bin/docker_demo
+CMD ./bin/docker_demo -port=$PORT
